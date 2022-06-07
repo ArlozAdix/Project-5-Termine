@@ -1,12 +1,10 @@
-getProducts();
-
-productList();
-
+// fetch + recuperer le Json
 async function getProducts(){
        let productList = await fetch("http://localhost:3000/api/products");
        return productList.json();
    }
 
+// Fonction principale pour afficher les articles
 async function productList() {
     let productList = await getProducts()
     .then((product) =>{
@@ -47,3 +45,6 @@ async function productList() {
         }
    });
 }
+
+productList();
+
