@@ -56,6 +56,10 @@ function displayBasket(basket) {
           </article>`;
           cart__items.innerHTML = out;
 
+          ///////////////////////////
+          //Fonction changeQuantity//
+          ///////////////////////////
+
           // Initializing HTML collection in a variable
           let collection = document.getElementsByClassName("itemQuantity");
 
