@@ -23,8 +23,8 @@ getProducts()
           <p class="productDescription">${product.description}</p>
         </article>
       </a>`
-      items.innerHTML = out;
     }
+    items.innerHTML = out;
 })
 // Checking fetch error
 .catch ((error) =>{

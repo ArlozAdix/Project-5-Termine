@@ -25,8 +25,8 @@ getProduct(productID)
     // Loop used to inject mutiple colors data
     for (let productColors of value.colors){
         out += `<option value="${productColors}"> ${productColors} </option>`;
-        colors.innerHTML = out;
     }
+    colors.innerHTML = out;
 })
 // Checking fetch errors
 .catch (err => {
@@ -117,3 +117,6 @@ addToCart.addEventListener("click", ()=>{
         window.confirm(`Veuillez choisir votre couleur et quantité avant de l'ajouter au panier`)
     }
 })
+
+//WINDOWS ALERT
+// quantite max via parametres

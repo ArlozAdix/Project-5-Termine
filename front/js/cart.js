@@ -17,16 +17,23 @@ function getBasket() {
   }
 }
 
+// Save the parameter "basket" in the localStorage (Key: basket)
+function saveBasket(basket) {
+  // Store the data as a string
+  localStorage.setItem("basket", JSON.stringify(basket));
+} 
+
+
 // Injecting function for the html content witht the localStorage data (Key: basket)
 function displayBasket(basket) {
-  // Initializing empty variable
+    // Initializing empty variable
     let out = "";
     // Injecting loop for the HTML content with the localStorage data (Key: basket)
     for (let i=0; i < basket.length; i++) {
         // Get aditionnal data from API 
         getProduct(basket[i].id)
         .then (product => {
-            out += `<article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
+            out += `<article class="cart__item" data-id="${basket[i].id}" data-color="${basket[i].color}">
             <div class="cart__item__img">
               <img src="${product.imageUrl}" alt="${product.altTxt}">
             </div>
@@ -48,17 +55,43 @@ function displayBasket(basket) {
             </div>
           </article>`;
           cart__items.innerHTML = out;
+
+          // Initializing HTML collection in a variable
+          let collection = document.getElementsByClassName("itemQuantity");
+
+          // addEventListerner loop for the entire collection
+          for (i=0; i < collection.length; i++){
+          // Quantities modifier function
+          collection[i].addEventListener("change", function changeQuantity(){
+            // add some variable to compare and find which product we talk about
+            let productID = this.closest("article").dataset.id;
+            let productColor = this.closest("article").dataset.color;
+            let foundIndex = basket.findIndex(p => (p.id == productID) && (p.color == productColor));
+            // Modifying the quantity if it different from the actual basket
+            if ((basket[foundIndex].quantity != this.value) && (this.value >=1 && this.value <100)){
+              basket[foundIndex].quantity = this.value;
+            // Adding some condition is the customer wants more than 100 products of the same ID/Color Combinaison
+            } else {
+              basket[foundIndex].quantity = 100;
+              window.confirm(`Vous ne pouvez commander qu'une quantite maximum de 100 par produit et couleur`)
+            }
+            // Store the modified quantity to the local storal (Key: basket)
+            saveBasket(basket);
+          });
+          }
         })
     }
 }
 
 let basket = getBasket();
-displayBasket(basket);
+displayBasket(basket)
 
 
-//terminer le codehtml a integrer
-//bouton supprimmer
-//mettre le prix total
+
+
+// bouton supprimmer
+// mettre le prix total
+// mettre quantite totale
 
 // Test calcul quantite totale
 // let totalProductQuantity = 0;
@@ -67,8 +100,6 @@ displayBasket(basket);
 // console.log(totalProductQuantity);
 
 // test change quantity
-
 // let itemQuantity = document.querySelector(".itemQuantity")
 // itemQuantity.addEventListener("change", () => {
-  
 // })
