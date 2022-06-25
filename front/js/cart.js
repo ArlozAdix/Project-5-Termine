@@ -1,3 +1,7 @@
+//////////////////////
+//Display the basket//
+//////////////////////
+
 //  Request the API product using his ID and returns it in JSON format
 async function getProduct(identifiant_produit){
     let productList = await fetch(`http://localhost:3000/api/products/${identifiant_produit}`);
@@ -61,12 +65,12 @@ function displayBasket(basket) {
           ///////////////////////////
 
           // Initializing HTML collection in a variable
-          let collection = document.getElementsByClassName("itemQuantity");
+          let quantityCollection = document.getElementsByClassName("itemQuantity");
 
           // addEventListerner loop for the entire collection
-          for (i=0; i < collection.length; i++){
+          for (i=0; i < quantityCollection.length; i++){
           // Quantities modifier function
-          collection[i].addEventListener("change", function changeQuantity(){
+            quantityCollection[i].addEventListener("change", function changeQuantity(){
             // add some variable to compare and find which product we talk about
             let productID = this.closest("article").dataset.id;
             let productColor = this.closest("article").dataset.color;
@@ -83,15 +87,33 @@ function displayBasket(basket) {
             saveBasket(basket);
           });
           }
+          //////////////////////////////
+          //Fonction deleteProduct//////
+          //////////////////////////////
+
+          // addEventListerner loop for the entire collection
+          let deleteCollection = document.getElementsByClassName("deleteItem");
+          // addEventListerner loop for the entire collection
+          for (i=0; i<deleteCollection .length; i++){
+            deleteCollection[i].addEventListener("click", function deleteproduct (){
+            // add some variable to compare and find which product we talk about
+            let productID = this.closest("article").dataset.id;
+            let productColor = this.closest("article").dataset.color;
+            let foundIndex = basket.findIndex(p => (p.id == productID) && (p.color == productColor));
+            // Delete the product via it index
+            basket.splice(basket.foundIndex, 1)
+            // Store this new basket to the local storal (Key: basket)
+            saveBasket(basket);
+            // Refresh the display basket
+            displayBasket(basket);
+            })
+          }
         })
     }
 }
 
 let basket = getBasket();
 displayBasket(basket)
-
-
-
 
 // bouton supprimmer
 // mettre le prix total
