@@ -59,6 +59,9 @@ function displayBasket(basket) {
             </div>
           </article>`;
           cart__items.innerHTML = out;
+          totalQuantity(basket);
+          totalQuantity (basket);
+          totalPrice(basket);
 
           ///////////////////////////
           //Fonction changeQuantity//
@@ -85,23 +88,25 @@ function displayBasket(basket) {
             }
             // Store the modified quantity to the local storal (Key: basket)
             saveBasket(basket);
+            totalQuantity(basket);
+            totalPrice(basket);
           });
           }
-          //////////////////////////////
-          //Fonction deleteProduct//////
-          //////////////////////////////
+          //////////////////////////
+          //Fonction deleteProduct//
+          //////////////////////////
 
           // addEventListerner loop for the entire collection
           let deleteCollection = document.getElementsByClassName("deleteItem");
           // addEventListerner loop for the entire collection
-          for (i=0; i<deleteCollection .length; i++){
+          for (i=0; i<deleteCollection.length; i++){
             deleteCollection[i].addEventListener("click", function deleteproduct (){
             // add some variable to compare and find which product we talk about
             let productID = this.closest("article").dataset.id;
             let productColor = this.closest("article").dataset.color;
             let foundIndex = basket.findIndex(p => (p.id == productID) && (p.color == productColor));
             // Delete the product via it index
-            basket.splice(basket.foundIndex, 1)
+            basket.splice(foundIndex, 1);
             // Store this new basket to the local storal (Key: basket)
             saveBasket(basket);
             // Refresh the display basket
@@ -112,20 +117,33 @@ function displayBasket(basket) {
     }
 }
 
+// Function to calculate the total quantity and inject it into the html
+function totalQuantity (basket){
+  // Initializing empty variable
+  let totalQuantity = 0;
+  // Calculation loop
+  for (i=0; i<basket.length;i++){
+  totalQuantity += Number(basket[i].quantity);
+  }
+  // Injection into HTML
+  document.querySelector("#totalQuantity").innerHTML = totalQuantity;
+}
+
+// Function to calculate the total price and inject it into the html
+function totalPrice (basket){
+  // Initializing empty variable
+  let totalPrice = 0;
+  // Calculation loop
+  for (i=0; i<basket.length;i++){
+    quantity = basket[i].quantity;
+    getProduct(basket[i].id)
+    .then (product =>{
+    totalPrice += product.price*quantity;
+    // Injection into HTML
+    document.querySelector("#totalPrice").innerHTML = totalPrice;
+  }
+)}
+}
+
 let basket = getBasket();
-displayBasket(basket)
-
-// bouton supprimmer
-// mettre le prix total
-// mettre quantite totale
-
-// Test calcul quantite totale
-// let totalProductQuantity = 0;
-// totalProductQuantity += basket[i].quantity;
-// totalQuantity.innerHTML = totalProductQuantity;
-// console.log(totalProductQuantity);
-
-// test change quantity
-// let itemQuantity = document.querySelector(".itemQuantity")
-// itemQuantity.addEventListener("change", () => {
-// })
+displayBasket(basket);

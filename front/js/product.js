@@ -33,34 +33,6 @@ getProduct(productID)
     console.log("Erreur getProduct");
 })
 
-////////////////////////////
-////////OLD VERSION/////////
-////////////////////////////
-
-// getProduct(productID)
-// .then(product => {
-
-//     let productImg = document.createElement("img")
-//     document.querySelector(".item__img").appendChild(productImg);
-//     productImg.src = product.imageUrl;
-//     productImg.alt = product.altTxt;
-
-//     title.innerHTML = product.name;
-//     price.innerHTML = product.price;
-//     description.innerHTML = product.description;
-
-//     for (let colors of product.colors){
-//         let productColors = document.createElement("option");
-//         document.querySelector("#colors").appendChild(productColors);
-//         productColors.value = colors;
-//         productColors.innerHTML = colors;
-//     }
-// })
-// // Console log en cas d'erreur de fetch
-// .catch ((error) => {
-//     console.log(error);
-// })
-
 ////////////////////
 // Cart Management//
 ////////////////////
