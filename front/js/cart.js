@@ -147,3 +147,39 @@ function totalPrice (basket){
 
 let basket = getBasket();
 displayBasket(basket);
+
+//////////////
+//Order form//
+//////////////
+
+let emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$');
+let charRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
+let addressRegExp = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
+
+function getForm (){
+  firstName.addEventListener('change', ()=>{
+    inputCheck(firstName,charRegExp,firstNameErrorMsg);
+  })
+  lastName.addEventListener('change', ()=>{
+    inputCheck(lastName,charRegExp,lastNameErrorMsg);
+  })
+  address.addEventListener('change', ()=>{
+    inputCheck(address,addressRegExp,addressErrorMsg);
+  })
+  city.addEventListener('change', ()=>{
+    inputCheck(city,charRegExp,cityErrorMsg);
+  })
+  email.addEventListener('change', ()=>{
+    inputCheck(email,emailRegExp,emailErrorMsg);
+  })
+}
+
+function inputCheck(input,regExp,errorMsg){
+  if(regExp.test(input.value)){
+    errorMsg.innerHTML = '';
+  } else {
+    errorMsg.innerHTML = 'Veuillez renseigner ce champ correctement';
+  }
+}
+
+getForm();
