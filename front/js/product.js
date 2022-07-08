@@ -41,7 +41,7 @@ getProduct(productID)
 function saveBasket(basket) {
     // Store the data as a string
     localStorage.setItem("basket", JSON.stringify(basket));
-} 
+}; 
 
 // Get the actual localStorage data (Key: basket)
 function getBasket() {
@@ -59,6 +59,10 @@ function getBasket() {
 //Listening click event on the addToCart button
 addToCart.addEventListener("click", ()=>{
     //Checking if quantity and colors have been chosen and valid
+
+    //Verif en deux etapes, si quantite et couleurs existantes puis verif quantite valide
+    // La valeur input doit revenir a 100 si > 100, ou 0 ?
+
     if (quantity.value >= 1 && quantity.value <= 100 && colors.value != "") {
         // define the product array with ID, color and the quantity
         let product = {id:`${productID}`, color:`${colors.value}`, quantity:Number(`${quantity.value}`)};
@@ -66,6 +70,7 @@ addToCart.addEventListener("click", ()=>{
         let basket = getBasket();
         // Checking if the ID/Color combinaison is already existing in the basket
         let foundProduct = basket.find(p => (p.id == product.id) && (p.color == product.color));
+
         if(foundProduct != undefined){
             // Checking if the basket does not exceed 100 products of the same combinaison (ID/color)
             if ( (Number(foundProduct.quantity) + Number(`${quantity.value}`)) <= 100 ){
@@ -74,21 +79,18 @@ addToCart.addEventListener("click", ()=>{
             // blocks a maximum of 100 products and sends a notification
             } else {
                 foundProduct.quantity = 100;
-                window.confirm(`Vous ne pouvez commander qu'une quantite maximum de 100 par produit et couleur`)
+                window.alert(`Vous ne pouvez commander qu'une quantite maximum de 100 par produit et par couleur`)
             }
         // If the ID/color combinaison dosnt exist, push it in the basket variable
         } else {
             basket.push(product);
         }
         // Send a confirmation notification tot he custommer 
-        window.confirm(`Votre commande  de ${quantity.value} ${title.innerHTML} ${colors.value} est ajoutee au panier`)
+        window.alert(`Votre commande  de ${quantity.value} ${title.innerHTML} ${colors.value} est ajoutee au panier`)
         // Store the new basket in the localStorage (Key: basket)
         saveBasket(basket);
     } else {
         // Send error notification if the quantity <=0 or >100 or the color has not been choosen
-        window.confirm(`Veuillez choisir votre couleur et quantité avant de l'ajouter au panier`)
+        window.alert(`Veuillez choisir votre couleur et quantité avant de l'ajouter au panier`)
     }
 })
-
-//WINDOWS ALERT
-// quantite max via parametres

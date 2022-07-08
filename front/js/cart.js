@@ -59,9 +59,6 @@ function displayBasket(basket) {
             </div>
           </article>`;
           cart__items.innerHTML = out;
-          totalQuantity(basket);
-          totalQuantity (basket);
-          totalPrice(basket);
 
           ///////////////////////////
           //Fonction changeQuantity//
@@ -69,6 +66,10 @@ function displayBasket(basket) {
 
           // Initializing HTML collection in a variable
           let quantityCollection = document.getElementsByClassName("itemQuantity");
+
+
+          //Foreach > transformer en tableau array.quantity ou QuerySelector qui donne un array
+
 
           // addEventListerner loop for the entire collection
           for (i=0; i < quantityCollection.length; i++){
@@ -83,8 +84,9 @@ function displayBasket(basket) {
               basket[foundIndex].quantity = this.value;
             // Adding some condition is the customer wants more than 100 products of the same ID/Color Combinaison
             } else {
+              this.value = 100;
               basket[foundIndex].quantity = 100;
-              window.confirm(`Vous ne pouvez commander qu'une quantite maximum de 100 par produit et couleur`)
+              window.alert(`Vous ne pouvez commander qu'une quantite maximum de 100 par produit et couleur`)
             }
             // Store the modified quantity to the local storal (Key: basket)
             saveBasket(basket);
@@ -115,6 +117,8 @@ function displayBasket(basket) {
           }
         })
     }
+    totalQuantity (basket);
+    totalPrice(basket);
 }
 
 // Function to calculate the total quantity and inject it into the html
@@ -135,10 +139,10 @@ function totalPrice (basket){
   let totalPrice = 0;
   // Calculation loop
   for (i=0; i<basket.length;i++){
-    quantity = basket[i].quantity;
+    let quantity = basket[i].quantity;
     getProduct(basket[i].id)
     .then (product =>{
-    totalPrice += product.price*quantity;
+    totalPrice += Number(product.price)*Number(quantity);
     // Injection into HTML
     document.querySelector("#totalPrice").innerHTML = totalPrice;
   }
@@ -152,9 +156,9 @@ displayBasket(basket);
 //Order form//
 //////////////
 
-let emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$');
+let emailRegExp = new RegExp('^[a-z0-9.-_]+[@]{1}[a-z0-9.-_]+[.]{1}[a-z]{2,10}$');
 let charRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
-let addressRegExp = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
+let addressRegExp = new RegExp("^[0-9]{1,5}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
 
 function getForm (){
   firstName.addEventListener('change', ()=>{
@@ -164,7 +168,7 @@ function getForm (){
     inputCheck(lastName,charRegExp,lastNameErrorMsg);
   })
   address.addEventListener('change', ()=>{
-    inputCheck(address,addressRegExp,addressErrorMsg);
+    inputCheck(address,addressRegExp,addressErrorMsg," (exemple: 23 de la rue de la Douane)");
   })
   city.addEventListener('change', ()=>{
     inputCheck(city,charRegExp,cityErrorMsg);
@@ -174,12 +178,50 @@ function getForm (){
   })
 }
 
-function inputCheck(input,regExp,errorMsg){
+function inputCheck(input,regExp,errorMsg,msg){
   if(regExp.test(input.value)){
     errorMsg.innerHTML = '';
   } else {
-    errorMsg.innerHTML = 'Veuillez renseigner ce champ correctement';
+    errorMsg.innerHTML = 'Veuillez renseigner ce champ correctement' + msg;
   }
 }
+
+  order.addEventListener('click', (event)=>{
+    event.preventDefault();
+    let productIDArray = [];
+    for(let i=0; i<basket.length;i++){
+      productIDArray.push(basket[i].id);
+    }
+
+    let productOrder = {
+      contact : {
+        "firstName": firstName.value,
+        "lastName": lastName.value,
+        "address": address.value,
+        "city": city.value,
+        "email": email.value,
+      },
+      "products": productIDArray,
+    };
+    console.log(productOrder);
+
+    fetch('http://localhost:3000/api/products/order', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(productOrder)
+    })
+    // Async la function
+    .then((response) => response.json())
+    //Search param
+    .then ((data) => {
+      console.log(data.orderId);
+    document.location.href = `confirmation.html?orderId=${data.orderId}`;
+    })
+    .catch (err => {
+      console.log("Erreur postForm");
+    });
+  })
 
 getForm();
