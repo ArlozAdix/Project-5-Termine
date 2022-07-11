@@ -60,9 +60,6 @@ function getBasket() {
 addToCart.addEventListener("click", ()=>{
     //Checking if quantity and colors have been chosen and valid
 
-    //Verif en deux etapes, si quantite et couleurs existantes puis verif quantite valide
-    // La valeur input doit revenir a 100 si > 100, ou 0 ?
-
     if (quantity.value >= 1 && quantity.value <= 100 && colors.value != "") {
         // define the product array with ID, color and the quantity
         let product = {id:`${productID}`, color:`${colors.value}`, quantity:Number(`${quantity.value}`)};
@@ -91,6 +88,6 @@ addToCart.addEventListener("click", ()=>{
         saveBasket(basket);
     } else {
         // Send error notification if the quantity <=0 or >100 or the color has not been choosen
-        window.alert(`Veuillez choisir votre couleur et quantité avant de l'ajouter au panier`)
+        window.alert(`Veuillez choisir votre couleur et une quantité entre 1 et 100 avant de l'ajouter au panier`)
     }
 })
