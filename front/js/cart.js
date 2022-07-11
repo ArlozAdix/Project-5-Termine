@@ -153,45 +153,79 @@ displayBasket(basket);
 //Order form//
 //////////////
 
+// variable to do the Regex checks
 let emailRegExp = new RegExp('^[a-z0-9.-_]+[@]{1}[a-z0-9.-_]+[.]{1}[a-z]{2,10}$');
 let charRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
 let addressRegExp = new RegExp("^[0-9]{1,5}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
-let errorRegExp = false;
+let firstNameErr= false;
+let lastNameErr= false;
+let addressErr= false;
+let cityErr= false;
+let emailErr= false;
 
+// Run the inputCheck function if the value is changed
 firstName.addEventListener('change', ()=>{
   inputCheck(firstName,charRegExp,firstNameErrorMsg," (exemple: Jean)");
+  if (firstNameErrorMsg.innerHTML != ''){
+    firstNameErr= true;
+  } else {
+    firstNameErr= false;
+  }
 })
 lastName.addEventListener('change', ()=>{
   inputCheck(lastName,charRegExp,lastNameErrorMsg," (exemple: Dupont)");
+  if (lastNameErrorMsg.innerHTML != ''){
+    lastNameErr= true;
+  } else {
+    lastNameErr= false;
+  }
 })
 address.addEventListener('change', ()=>{
   inputCheck(address,addressRegExp,addressErrorMsg," (exemple: 23 de la rue de la Douane)");
+  if (addressErrorMsg.innerHTML != ''){
+    addressErr= true;
+  } else {
+    addressErr= false;
+  }
 })
 city.addEventListener('change', ()=>{
   inputCheck(city,charRegExp,cityErrorMsg," (exemple: Paris)");
+  if (cityErrorMsg.innerHTML != ''){
+    cityErr= true;
+  } else {
+    cityNameErr= false;
+  }
 })
 email.addEventListener('change', ()=>{
   inputCheck(email,emailRegExp,emailErrorMsg," (exemple: jean.dupont@gmail.com)");
+  if (emailErrorMsg.innerHTML != ''){
+    emailNameErr= true;
+  } else {
+    emailNameErr= false;
+  }
 })
 
+// This function is used to check Regex with several parameters
 function inputCheck(input,regExp,errorMsg,msg){
   if(regExp.test(input.value)){
     errorMsg.innerHTML = '';
-    errorRegExp = false;
   } else {
     errorMsg.innerHTML = 'Veuillez renseigner ce champ correctement' + msg;
-    errorRegExp = true;
   }
 }
 
+// Here we will define the sending of data to the API when clicking on the order button and under certain conditions
 order.addEventListener('click', (event)=>{
   event.preventDefault();
-  if(errorRegExp == false && basket.length != 0) {
+  // checking if all of input data are correct
+  if(firstNameErr == false && lastNameErr == false && addressErr == false && cityErr == false && emailErr == false && basket.length != 0) {
+    // create empty array
     let productIDArray = [];
+    // Get all ID in the basket to the new Array
     for(let i=0; i<basket.length;i++){
       productIDArray.push(basket[i].id);
     }
-
+    // Get all the input data about the customer
     let productOrder = {
       contact : {
         "firstName": firstName.value,
@@ -202,17 +236,19 @@ order.addEventListener('click', (event)=>{
       },
       "products": productIDArray,
     };
-
+    //Post it to the API
     fetch('http://localhost:3000/api/products/order', {
     method: 'POST',
     headers: {
+      // This si the content type for JSON sending
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(productOrder)
     })
+    // get the promise as JSON format
     .then((response) => response.json())
+    // Transform the reponse in URL
     .then ((data) => {
-      console.log(data.orderId);
     document.location.href = `confirmation.html?orderId=${data.orderId}`;
     })
     .catch (err => {
