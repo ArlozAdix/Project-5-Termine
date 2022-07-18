@@ -252,7 +252,7 @@ order.addEventListener('click', (event)=>{
     document.location.href = `confirmation.html?orderId=${data.orderId}`;
     })
     .catch (err => {
-      console.log("Erreur postForm");
+      console.log("Erreur de traitement lors de la commande");
     });
   }
 })
